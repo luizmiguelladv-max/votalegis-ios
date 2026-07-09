@@ -3,7 +3,7 @@
   "appName": "VotaLegis",
   "webDir": "www",
   "server": {
-    "url": "https://votalegis.com.br",
+    "url": "https://votalegis.com.br/login",
     "cleartext": false,
     "iosScheme": "https",
     "allowNavigation": ["votalegis.com.br", "*.votalegis.com.br"]
