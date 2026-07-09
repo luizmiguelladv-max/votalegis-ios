@@ -1,0 +1,74 @@
+name: iOS → TestFlight
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Evita 2 builds simultâneos (push + dispatch) brigando pelos certificados.
+concurrency:
+  group: ios-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # GOTCHA #2 — macos-15 (Xcode 26). A Apple REJEITA binários feitos com SDK
+    # antigo (erro 409 no upload). NÃO usar macos-13/14.
+    runs-on: macos-15
+    timeout-minutes: 40
+
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      # base64("<OWNER>:<PAT>") — PAT com escopo repo+workflow (GOTCHA #6).
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      BUILD_NUMBER: ${{ github.run_number }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Selecionar o Xcode mais novo (26)
+        run: |
+          LATEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1)
+          if [ -n "$LATEST" ]; then sudo xcode-select -s "$LATEST/Contents/Developer"; fi
+          xcodebuild -version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: npm install
+        run: npm install
+
+      # Gera o projeto iOS nativo do zero no Mac (com pods). Não commitamos ios/.
+      - name: Capacitor add ios
+        run: npx cap add ios && npx cap sync ios
+
+      - name: Info.plist — permissões + export compliance
+        run: |
+          P="ios/App/App/Info.plist"
+          # Microfone: captura/transcrição da sessão (getUserMedia audio). OBRIGATÓRIO.
+          /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'O VotaLegis usa o microfone para captar e transcrever o áudio da sessão legislativa.'" "$P" || \
+          /usr/libexec/PlistBuddy -c "Set :NSMicrophoneUsageDescription 'O VotaLegis usa o microfone para captar e transcrever o áudio da sessão legislativa.'" "$P"
+          # Câmera + galeria: anexar foto de vereador (input type=file accept=image).
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string 'O VotaLegis usa a câmera para anexar fotos de vereadores e proposições.'" "$P" || true
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string 'O VotaLegis acessa a galeria para anexar fotos.'" "$P" || true
+          # Export compliance: dispensa a pergunta a cada build (só HTTPS/TLS padrão).
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" "$P" || \
+          /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" "$P"
+          echo "--- Info.plist ---"; /usr/libexec/PlistBuddy -c "Print" "$P" | grep -iE "Usage|NonExempt" || true
+
+      - name: Ícones + splash (a partir de assets/icon.png e assets/splash.png)
+        run: npx capacitor-assets generate --ios --iconBackgroundColor '#4338ca' --splashBackgroundColor '#2563eb' --splashBackgroundColorDark '#1e1b4b'
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Build + assinar + enviar pra TestFlight
+        run: bundle exec fastlane beta

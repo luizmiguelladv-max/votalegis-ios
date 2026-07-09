@@ -1,0 +1,8 @@
+node_modules/
+ios/
+build/
+*.ipa
+*.dSYM.zip
+.DS_Store
+fastlane/report.xml
+fastlane/README.md

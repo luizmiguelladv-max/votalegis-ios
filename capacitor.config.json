@@ -1,0 +1,25 @@
+{
+  "appId": "br.com.votalegis",
+  "appName": "VotaLegis",
+  "webDir": "www",
+  "server": {
+    "url": "https://votalegis.com.br",
+    "cleartext": false,
+    "iosScheme": "https",
+    "allowNavigation": ["votalegis.com.br", "*.votalegis.com.br"]
+  },
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#ffffff",
+    "limitsNavigationsToAppBoundDomains": false,
+    "scrollEnabled": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "showSpinner": false,
+      "backgroundColor": "#2563eb"
+    }
+  }
+}
