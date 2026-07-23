@@ -10,7 +10,7 @@
   },
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#071426",
     "limitsNavigationsToAppBoundDomains": false,
     "scrollEnabled": true,
     "preferredContentMode": "mobile"
@@ -18,7 +18,7 @@
   "plugins": {
     "StatusBar": {
       "style": "LIGHT",
-      "overlaysWebView": true
+      "overlaysWebView": false
     },
     "SplashScreen": {
       "launchShowDuration": 1200,
