@@ -37,10 +37,14 @@
       overflow-x: clip;
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
-      --vl-ios-safe-top: env(safe-area-inset-top, 0px);
-      --vl-ios-safe-right: env(safe-area-inset-right, 0px);
-      --vl-ios-safe-bottom: env(safe-area-inset-bottom, 0px);
-      --vl-ios-safe-left: env(safe-area-inset-left, 0px);
+      --vl-ios-safe-top:
+        var(--vl-ios-native-safe-top, env(safe-area-inset-top, 0px));
+      --vl-ios-safe-right:
+        var(--vl-ios-native-safe-right, env(safe-area-inset-right, 0px));
+      --vl-ios-safe-bottom:
+        var(--vl-ios-native-safe-bottom, env(safe-area-inset-bottom, 0px));
+      --vl-ios-safe-left:
+        var(--vl-ios-native-safe-left, env(safe-area-inset-left, 0px));
     }
 
     html.vl-ios-app body {
@@ -545,6 +549,24 @@
       max-width: 100% !important;
     }
 
+    @media (max-width: 767px) and (orientation: portrait) {
+      /*
+       * No login remoto o painel usa align-items:center. Em iPhones altos isso
+       * empurrava o formulário centenas de pixels para baixo e criava um vazio
+       * artificial. O conteúdo agora começa logo após a dobra visual.
+       */
+      html.vl-ios-app .auth-panel {
+        align-items: flex-start !important;
+        min-height: calc(100dvh - 178px) !important;
+        padding-top: clamp(34px, 6dvh, 50px) !important;
+      }
+
+      html.vl-ios-app .auth-wrap {
+        width: min(100%, 500px) !important;
+        margin: 0 auto !important;
+      }
+    }
+
     @media (max-width: 767px), (orientation: landscape) and (max-height: 500px) {
       :root.vl-ios-app {
         --vl-ios-page-x: 14px;
@@ -929,7 +951,7 @@
       }
 
       /* Dock nativo: somente este elemento fica fora do fluxo. */
-      html.vl-ios-app.vl-ios-plenary .app-sidebar {
+      html.vl-ios-app.vl-ios-session .app-sidebar {
         position: fixed !important;
         z-index: 205 !important;
         top: auto !important;
@@ -947,6 +969,7 @@
         padding-bottom: calc(7px + var(--vl-ios-safe-bottom)) !important;
         padding-left: calc(7px + var(--vl-ios-safe-left)) !important;
         gap: 4px !important;
+        justify-content: center !important;
         overflow: visible !important;
         background: rgba(9, 18, 33, 0.97) !important;
         border: 0 !important;
@@ -956,7 +979,7 @@
         backdrop-filter: blur(22px) saturate(1.3) !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-dock-main,
         .sb-dock-mais
       ) {
@@ -966,7 +989,7 @@
         align-items: center !important;
         justify-content: center !important;
         min-width: 0 !important;
-        max-width: none !important;
+        max-width: 170px !important;
         min-height: 54px !important;
         padding: 6px 3px !important;
         gap: 3px !important;
@@ -977,7 +1000,7 @@
         text-align: center !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-dock-main,
         .sb-dock-mais
       ) i {
@@ -985,21 +1008,21 @@
         font-size: 20px !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-dock-main,
         .sb-dock-mais
       ) .sb-lbl-full {
         display: none !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-dock-main,
         .sb-dock-mais
       ) .sb-lbl-short {
         display: inline !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-mobile-hide,
         .sb-pres-ind
       ) {
@@ -1171,6 +1194,41 @@
         --vl-ios-dock-base: 62px;
       }
 
+      html.vl-ios-app .auth-shell {
+        display: grid !important;
+        grid-template-columns: minmax(280px, 0.82fr) minmax(360px, 1.18fr) !important;
+        min-height: 100dvh !important;
+      }
+
+      html.vl-ios-app .story-panel {
+        min-height: 100dvh !important;
+        padding:
+          calc(16px + var(--vl-ios-safe-top))
+          24px
+          calc(16px + var(--vl-ios-safe-bottom))
+          calc(24px + var(--vl-ios-safe-left)) !important;
+      }
+
+      html.vl-ios-app .story-content {
+        margin: auto 0 !important;
+        padding: 18px 0 !important;
+      }
+
+      html.vl-ios-app .story-title {
+        font-size: clamp(28px, 5vw, 40px) !important;
+      }
+
+      html.vl-ios-app .auth-panel {
+        min-height: 100dvh !important;
+        margin-top: 0 !important;
+        padding:
+          calc(18px + var(--vl-ios-safe-top))
+          calc(24px + var(--vl-ios-safe-right))
+          calc(18px + var(--vl-ios-safe-bottom))
+          24px !important;
+        border-radius: 0 !important;
+      }
+
       html.vl-ios-app.vl-ios-plenary .app-main {
         padding-top: 9px !important;
         padding-right: calc(16px + var(--vl-ios-safe-right)) !important;
@@ -1195,7 +1253,7 @@
         font-size: 20px !important;
       }
 
-      html.vl-ios-app.vl-ios-plenary .app-sidebar > :is(
+      html.vl-ios-app.vl-ios-session .app-sidebar > :is(
         .sb-dock-main,
         .sb-dock-mais
       ) {
