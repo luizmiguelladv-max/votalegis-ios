@@ -72,4 +72,6 @@ test('workflow inclui a integração nativa antes do build', () => {
   assert.match(fastfile, /File\.binread\(bundled_script\) == File\.binread\(source_script\)/)
   assert.match(fastfile, /ipa: ipa_path/)
   assert.match(fastfile, /display_name == "VotaLegis"/)
+  assert.match(fastfile, /UI\.success\("IPA contém a UI iOS v2/)
+  assert.doesNotMatch(fastfile, /UI\.success!/)
 })
