@@ -53,10 +53,14 @@ test('protege safe areas e mantém os cards móveis no fluxo', () => {
   assert.match(source, /padding-left: calc\(20px \+ var\(--vl-ios-safe-left\)\)/)
 })
 
-test('UI v2 usa rolagem natural e trata os estados dinâmicos do plenário', () => {
+test('UI v3 usa rolagem natural, identidade nativa e trata os estados dinâmicos', () => {
   const source = read('native/votalegis-ios.js')
 
-  assert.match(source, /root\.dataset\.vlIosUi = '2'/)
+  assert.match(source, /root\.dataset\.vlIosUi = '3'/)
+  assert.match(source, /const redesignStyles = String\.raw/)
+  assert.match(source, /--vl3-cyan: #2dd4ff/)
+  assert.match(source, /\.vote-btn\.sim[\s\S]*linear-gradient/)
+  assert.match(source, /\.session-actions \.btn-secondary/)
   assert.match(source, /root\.classList\.toggle\('vl-ios-plenary'/)
   assert.match(source, /\.app-body \{[\s\S]*overflow: visible !important/)
   assert.match(source, /\.app-main \{[\s\S]*overflow: visible !important/)
@@ -84,6 +88,6 @@ test('workflow inclui a integração nativa antes do build', () => {
   assert.match(fastfile, /File\.binread\(bundled_script\) == File\.binread\(source_script\)/)
   assert.match(fastfile, /ipa: ipa_path/)
   assert.match(fastfile, /display_name == "VotaLegis"/)
-  assert.match(fastfile, /UI\.success\("IPA contém a UI iOS v2/)
+  assert.match(fastfile, /UI\.success\("IPA contém a UI iOS v3/)
   assert.doesNotMatch(fastfile, /UI\.success!/)
 })
