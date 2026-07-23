@@ -90,6 +90,8 @@ Essa camada:
 - bloqueia pinch/double-tap/focus zoom dentro do aplicativo;
 - espelha os insets reais do UIKit no CSS em toda navegação e rotação, evitando
   relógio, Dynamic Island e indicador inferior sem somar o recorte duas vezes;
+- aplica a identidade iOS v3 no login, sessão, votação, Ordens e Perfil, com
+  superfícies em vidro, estados de voto distintos e dock flutuante;
 - usa rolagem natural do documento e mantém todos os cards dinâmicos no fluxo;
 - adapta votação, quórum, leitura, voz, incidentes, Ordens e Perfil;
 - mantém somente o dock de ações fixo e abre “Mais” como painel seguro;

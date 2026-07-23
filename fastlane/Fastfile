@@ -83,7 +83,7 @@ platform :ios do
 
       display_name = `/usr/libexec/PlistBuddy -c "Print:CFBundleDisplayName" "#{File.join(app_dir, "Info.plist")}"`.strip
       UI.user_error!("Nome visível incorreto no IPA: #{display_name}") unless display_name == "VotaLegis"
-      UI.success("IPA contém a UI iOS v2 e exibe o nome VotaLegis")
+      UI.success("IPA contém a UI iOS v3 e exibe o nome VotaLegis")
     end
 
     upload_to_testflight(
