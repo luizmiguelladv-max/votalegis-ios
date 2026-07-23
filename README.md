@@ -88,7 +88,8 @@ Essa camada:
 
 - força a viewport móvel em todas as rotas remotas;
 - bloqueia pinch/double-tap/focus zoom dentro do aplicativo;
-- aplica as quatro safe areas do iPhone sem somar o inset nativo duas vezes;
+- espelha os insets reais do UIKit no CSS em toda navegação e rotação, evitando
+  relógio, Dynamic Island e indicador inferior sem somar o recorte duas vezes;
 - usa rolagem natural do documento e mantém todos os cards dinâmicos no fluxo;
 - adapta votação, quórum, leitura, voz, incidentes, Ordens e Perfil;
 - mantém somente o dock de ações fixo e abre “Mais” como painel seguro;
@@ -109,7 +110,9 @@ legislativa** de câmaras municipais (Apple é tolerante com apps cívicos/gover
 ---
 
 ## OS 7 GOTCHAS (já resolvidos nesta config — não altere sem entender)
-1. **`contentInset: "never"`** no `capacitor.config.json` — senão a safe-area conta em dobro e o cabeçalho fica gigante.
+1. **`contentInset: "never"` + bridge nativo das safe areas** — o UIKit fornece
+   os recortes reais ao CSS; `StatusBar.overlaysWebView: false` fica configurado
+   como preferência, mas o plugin iOS 6 não implementa essa opção sozinho.
 2. **`runs-on: macos-15` (Xcode 26)** — SDK antigo → Apple rejeita o upload (erro 409).
 3. **`setup_ci`** no Fastfile — destrava o keychain; sem ele o codesign TRAVA em "Embed Pods Frameworks" até o timeout.
 4. **`update_code_signing_settings` (manual)** + `team_id` + profile `match AppStore br.com.votalegis` — Capacitor vem sem assinatura.

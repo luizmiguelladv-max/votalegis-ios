@@ -10,7 +10,9 @@ test('configura o WKWebView no modo móvel sem inset nativo duplicado', () => {
   assert.equal(config.ios.preferredContentMode, 'mobile')
   assert.equal(config.ios.contentInset, 'never')
   assert.equal(config.ios.scrollEnabled, true)
+  assert.equal(config.ios.backgroundColor, '#071426')
   assert.equal(config.plugins.StatusBar.style, 'LIGHT')
+  assert.equal(config.plugins.StatusBar.overlaysWebView, false)
 })
 
 test('injeta o viewport e desativa zoom sem remover a rolagem vertical', () => {
@@ -26,6 +28,12 @@ test('injeta o viewport e desativa zoom sem remover a rolagem vertical', () => {
   assert.match(source, /active\.blur\(\)/)
   assert.match(native, /pinchGestureRecognizer\?\.isEnabled = false/)
   assert.match(native, /maximumZoomScale = 1/)
+  assert.match(native, /view\.backgroundColor = appBackground/)
+  assert.match(native, /window\?\.backgroundColor = UIColor/)
+  assert.match(native, /override func viewSafeAreaInsetsDidChange\(\)/)
+  assert.match(native, /syncSafeAreaInsetsIntoWebView\(\)/)
+  assert.match(native, /--vl-ios-native-safe-top/)
+  assert.match(native, /injectionTime: \.atDocumentStart/)
   assert.doesNotMatch(native, /isScrollEnabled = false/)
 })
 
@@ -36,6 +44,7 @@ test('protege safe areas e mantém os cards móveis no fluxo', () => {
   assert.match(source, /safe-area-inset-right/)
   assert.match(source, /safe-area-inset-bottom/)
   assert.match(source, /safe-area-inset-left/)
+  assert.match(source, /var\(--vl-ios-native-safe-top, env\(safe-area-inset-top/)
   assert.match(source, /\.app-header[\s\S]*height: calc\(60px \+ var\(--vl-ios-safe-top\)\)/)
   assert.match(source, /\.app-sidebar[\s\S]*padding-bottom: calc\(7px \+ var\(--vl-ios-safe-bottom\)\)/)
   assert.match(source, /\.placar-pres-top,[\s\S]*position: relative !important/)
@@ -55,6 +64,9 @@ test('UI v2 usa rolagem natural e trata os estados dinâmicos do plenário', () 
   assert.match(source, /\.sb-dock-secondary\.open \{[\s\S]*transform: translateY\(0\) !important/)
   assert.match(source, /\.sb-nav\.open \{[\s\S]*transform: translateX\(0\) !important/)
   assert.match(source, /\.sb-pres-ind[\s\S]*display: none !important/)
+  assert.match(source, /\.vl-ios-session \.app-sidebar \{[\s\S]*position: fixed !important/)
+  assert.match(source, /\.auth-panel \{[\s\S]*align-items: flex-start !important/)
+  assert.match(source, /\.auth-shell \{[\s\S]*grid-template-columns: minmax\(280px, 0\.82fr\)/)
 })
 
 test('workflow inclui a integração nativa antes do build', () => {
