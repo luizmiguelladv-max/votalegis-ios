@@ -1,5 +1,7 @@
 default_platform(:ios)
 
+require "tmpdir"
+
 BUNDLE_ID = "br.com.votalegis"
 PROFILE   = "match AppStore #{BUNDLE_ID}"
 
@@ -57,6 +59,28 @@ platform :ios do
       output_name: "App.ipa",
       clean: true
     )
+
+    # Confirma o conteúdo do artefato que será enviado, não apenas os arquivos
+    # do checkout. Assim o CI falha se a camada iOS ficar fora do IPA ou se o
+    # nome visível do aplicativo regredir.
+    Dir.mktmpdir("votalegis-ipa-") do |check_dir|
+      unless system("unzip", "-q", "build/App.ipa", "-d", check_dir)
+        UI.user_error!("Não foi possível inspecionar o IPA gerado")
+      end
+
+      app_dir = Dir[File.join(check_dir, "Payload", "*.app")].first
+      UI.user_error!("Bundle .app não encontrado no IPA") unless app_dir
+
+      bundled_script = File.join(app_dir, "public", "votalegis-ios.js")
+      UI.user_error!("Camada responsiva iOS ausente do IPA") unless File.file?(bundled_script)
+      unless File.binread(bundled_script) == File.binread("native/votalegis-ios.js")
+        UI.user_error!("Camada responsiva no IPA diverge do arquivo versionado")
+      end
+
+      display_name = `/usr/libexec/PlistBuddy -c "Print:CFBundleDisplayName" "#{File.join(app_dir, "Info.plist")}"`.strip
+      UI.user_error!("Nome visível incorreto no IPA: #{display_name}") unless display_name == "VotaLegis"
+      UI.success!("IPA contém a UI iOS v2 e exibe o nome VotaLegis")
+    end
 
     upload_to_testflight(
       api_key: api_key,

@@ -89,8 +89,13 @@ Essa camada:
 - força a viewport móvel em todas as rotas remotas;
 - bloqueia pinch/double-tap/focus zoom dentro do aplicativo;
 - aplica as quatro safe areas do iPhone sem somar o inset nativo duas vezes;
-- mantém cards e ações no fluxo normal em telas estreitas;
+- usa rolagem natural do documento e mantém todos os cards dinâmicos no fluxo;
+- adapta votação, quórum, leitura, voz, incidentes, Ordens e Perfil;
+- mantém somente o dock de ações fixo e abre “Mais” como painel seguro;
 - preserva rolagem vertical e o funcionamento normal do site no navegador.
+
+Antes do envio, o Fastlane também abre o IPA e confirma que essa camada está
+realmente empacotada e que o nome visível do aplicativo é `VotaLegis`.
 
 ## Risco de revisão (Guideline 4.2 "minimum functionality")
 É um wrapper de site — pode pegar observação. Mitigadores: é **sistema institucional de votação

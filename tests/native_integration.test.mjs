@@ -44,12 +44,28 @@ test('protege safe areas e mantém os cards móveis no fluxo', () => {
   assert.match(source, /padding-left: calc\(20px \+ var\(--vl-ios-safe-left\)\)/)
 })
 
+test('UI v2 usa rolagem natural e trata os estados dinâmicos do plenário', () => {
+  const source = read('native/votalegis-ios.js')
+
+  assert.match(source, /root\.dataset\.vlIosUi = '2'/)
+  assert.match(source, /root\.classList\.toggle\('vl-ios-plenary'/)
+  assert.match(source, /\.app-body \{[\s\S]*overflow: visible !important/)
+  assert.match(source, /\.app-main \{[\s\S]*overflow: visible !important/)
+  assert.match(source, /\.app-main > :is\([\s\S]*\.inc-presidencia,[\s\S]*\.app-area/)
+  assert.match(source, /\.sb-dock-secondary\.open \{[\s\S]*transform: translateY\(0\) !important/)
+  assert.match(source, /\.sb-nav\.open \{[\s\S]*transform: translateX\(0\) !important/)
+  assert.match(source, /\.sb-pres-ind[\s\S]*display: none !important/)
+})
+
 test('workflow inclui a integração nativa antes do build', () => {
   const workflow = read('.github/workflows/ios.yml')
   const storyboard = read('native/Main.storyboard')
+  const fastfile = read('fastlane/Fastfile')
 
   assert.match(workflow, /cp native\/AppDelegate\.swift ios\/App\/App\/AppDelegate\.swift/)
   assert.match(workflow, /cp native\/Main\.storyboard ios\/App\/App\/Base\.lproj\/Main\.storyboard/)
   assert.match(workflow, /cp native\/votalegis-ios\.js ios\/App\/App\/public\/votalegis-ios\.js/)
   assert.match(storyboard, /customClass="VotaLegisBridgeViewController"/)
+  assert.match(fastfile, /File\.binread\(bundled_script\) == File\.binread\("native\/votalegis-ios\.js"\)/)
+  assert.match(fastfile, /display_name == "VotaLegis"/)
 })
