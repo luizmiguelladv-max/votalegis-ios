@@ -12,9 +12,14 @@
     "contentInset": "never",
     "backgroundColor": "#ffffff",
     "limitsNavigationsToAppBoundDomains": false,
-    "scrollEnabled": true
+    "scrollEnabled": true,
+    "preferredContentMode": "mobile"
   },
   "plugins": {
+    "StatusBar": {
+      "style": "LIGHT",
+      "overlaysWebView": true
+    },
     "SplashScreen": {
       "launchShowDuration": 1200,
       "launchAutoHide": true,

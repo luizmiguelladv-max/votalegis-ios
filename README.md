@@ -82,6 +82,16 @@ roda no app Android (mesmo site), o iOS é equivalente. **A validação definiti
 TestFlight num iPhone real** — teste: abra uma votação no controle e confirme que chega ao vivo
 no app; minimize e reabra o app e confirme que reconecta.
 
+## Integração visual nativa
+Após o Capacitor gerar `ios/`, o workflow aplica os arquivos de `native/`.
+Essa camada:
+
+- força a viewport móvel em todas as rotas remotas;
+- bloqueia pinch/double-tap/focus zoom dentro do aplicativo;
+- aplica as quatro safe areas do iPhone sem somar o inset nativo duas vezes;
+- mantém cards e ações no fluxo normal em telas estreitas;
+- preserva rolagem vertical e o funcionamento normal do site no navegador.
+
 ## Risco de revisão (Guideline 4.2 "minimum functionality")
 É um wrapper de site — pode pegar observação. Mitigadores: é **sistema institucional de votação
 legislativa** de câmaras municipais (Apple é tolerante com apps cívicos/governamentais) e tem
