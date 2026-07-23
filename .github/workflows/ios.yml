@@ -44,9 +44,18 @@ jobs:
       - name: npm install
         run: npm install
 
+      - name: Testes do wrapper
+        run: npm test
+
       # Gera o projeto iOS nativo do zero no Mac (com pods). Não commitamos ios/.
       - name: Capacitor add ios
         run: npx cap add ios && npx cap sync ios
+
+      - name: Aplicar integração nativa do VotaLegis
+        run: |
+          cp native/AppDelegate.swift ios/App/App/AppDelegate.swift
+          cp native/Main.storyboard ios/App/App/Base.lproj/Main.storyboard
+          cp native/votalegis-ios.js ios/App/App/public/votalegis-ios.js
 
       - name: Info.plist — permissões + export compliance
         run: |
